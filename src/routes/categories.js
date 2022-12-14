@@ -61,7 +61,7 @@ router.delete("/:id", async (req, res) => {
     const values = [Number(id)];
     const deleteResponse = await db.query(text, values);
 
-    if (!category.rows[0]) {
+    if (!deleteResponse.rows[0]) {
       return res.status(404).json({ error: "Category not deleted" });
     }
 
