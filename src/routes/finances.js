@@ -3,6 +3,7 @@ const router = express.Router();
 const db = require("../db");
 const categoriesQueries = require("../queries/categories");
 const usersQueries = require("../queries/users");
+const { route } = require("./categories");
 
 router.post("/", async (req, res) => {
   try {
@@ -102,6 +103,44 @@ router.delete("/:id", async (req, res) => {
     }
 
     return res.status(200).json(deleteResponse.rows);
+  } catch (error) {
+    return res.status(500).json(error);
+  }
+});
+
+router.get("/", async (req, res) => {
+  try {
+    const email = req.headers.email;
+    const { date } = req.query;
+
+    if (!date || date.length != 10) {
+      return res.status(400).json({
+        error: "Date is mandatory and should be in the format yyyy-mm-dd",
+      });
+    }
+
+    if (email.length < 5 || !email.includes("@")) {
+      return res.status(400).json({ error: "E-mail is invalid" });
+    }
+
+    const userQuery = await db.query(usersQueries.findByEmail(email));
+    if (!userQuery.rows[0]) {
+      return res.status(404).json({ error: "User does not exist" });
+    }
+
+    const dateObject = new Date(date);
+    const year = dateObject.getFullYear();
+    const month = dateObject.getMonth();
+
+    const initDate = new Date(year, month, 1).toISOString();
+    const finalDate = new Date(year, month + 1, 0).toISOString();
+
+    const text =
+      "SELECT fin.title, fin.date, fin.user_id, fin category_id, cat.name FROM finances as fin JOIN categories as cat ON fin.category_id = cat.id WHERE fin.user_id=$1 AND fin.date BETWEEN $2 AND $3 ORDER BY fin.date ASC";
+    const values = (userQuery.rows[0].id, initDate, finalDate);
+    const FinancesQuery = await db.query(text, values);
+
+    return res.status(200).json(FinancesQuery.rows);
   } catch (error) {
     return res.status(500).json(error);
   }
