@@ -1,4 +1,3 @@
-const { query, response } = require("express");
 const express = require("express");
 const router = express.Router();
 const db = require("../db");
@@ -32,7 +31,7 @@ router.post("/", (req, res) => {
     if (name.length < 3) {
       return res
         .status(400)
-        .json({ error: "name should have more than 3 characteres" });
+        .json({ error: "name should have more than 3 characters" });
     }
 
     const text = "INSERT INTO categories(name) VALUES($1) RETURNING *";
