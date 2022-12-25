@@ -54,8 +54,14 @@ Observation: if dont't stop press CTRL + C
 
 ```
 
-6. Run the project in final version
+6. Run the project
 
 ```
 npm run start
+```
+
+7. Run the project with nodemon
+
+```
+npm run start:dev
 ```
