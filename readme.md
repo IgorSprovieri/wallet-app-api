@@ -65,3 +65,11 @@ npm run start
 ```
 npm run start:dev
 ```
+
+## Author
+
+<img src="./public/images/My image.jpeg" width="22%">
+
+### _Igor Sprovieri Pereira_
+
+Programming student since 2013, started working with Unity C# in 2020, paticipated in 16 team projects as a freelancer and his own game studio. At this time, he was a tutor on Crie Seus Jogos company, helping students and writing articles to company's website. In 2022 he decided to learn web development with HTML, CSS and JS. Actually he is fullstack programmer and he is specializing in react.js, node.js, docker, mongoose, postgres and sequelize.
