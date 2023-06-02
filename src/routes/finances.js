@@ -7,10 +7,14 @@ const { route } = require("./categories");
 
 router.post("/", async (req, res) => {
   try {
-    const email = req.headers.email;
+    const currentEmail = req.headers.email;
     const { category_id, title, date, value } = req.body;
 
-    if (email.length < 5 || !email.includes("@")) {
+    if (
+      currentEmail.length < 5 ||
+      !currentEmail.includes("@") ||
+      !currentEmail.includes(".")
+    ) {
       return res.status(400).json({ error: "E-mail is invalid" });
     }
 
@@ -36,26 +40,28 @@ router.post("/", async (req, res) => {
       });
     }
 
-    const userQuery = await db.query(usersQueries.findByEmail(email));
-    if (!userQuery.rows[0]) {
-      return res.status(404).json({ error: "User does not exist" });
+    const userFound = await db.query(usersQueries.findByEmail(currentEmail));
+    if (!userFound.rows[0]) {
+      return res.status(404).json({ error: "User not found" });
     }
 
-    const category = await db.query(categoriesQueries.findById(category_id));
-    if (!category.rows[0]) {
+    const categoryFound = await db.query(
+      categoriesQueries.findById(category_id)
+    );
+    if (!categoryFound.rows[0]) {
       return res.status(404).json({ error: "Category not found" });
     }
 
     const text =
       "INSERT INTO finances(user_id, category_id, date, title, value) VALUES($1, $2, $3, $4, $5 ) RETURNING *";
-    const values = [userQuery.rows[0].id, category_id, title, date, value];
+    const values = [userFound.rows[0].id, category_id, title, date, value];
 
     const createResponse = await db.query(text, values);
     if (!createResponse.rows[0]) {
       return res.status(400).json({ error: "Finance not created" });
     }
 
-    return res.status(200).json(createResponse);
+    return res.status(201).json(createResponse);
   } catch (error) {
     return res.status(500).json(error);
   }
