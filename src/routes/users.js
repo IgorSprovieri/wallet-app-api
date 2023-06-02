@@ -106,8 +106,8 @@ router.put("/", async (req, res) => {
     const text =
       "UPDATE users SET name=$1, email=$2 WHERE email=$3 RETURNING *";
     const values = [name, email, currentEmail];
-    const updateResponse = await db.query(text, values);
 
+    const updateResponse = await db.query(text, values);
     if (!updateResponse.rows[0]) {
       return res.status(400).json({ error: "User not updated" });
     }
