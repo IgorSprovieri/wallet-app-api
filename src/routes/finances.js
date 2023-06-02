@@ -67,57 +67,18 @@ router.post("/", async (req, res) => {
   }
 });
 
-router.delete("/:id", async (req, res) => {
-  try {
-    const email = req.headers.email;
-    const { id } = req.params;
-
-    if (!id) {
-      return res.status(400).send({ error: "Param id is mandatory" });
-    }
-
-    if (email.length < 5 || !email.includes("@")) {
-      return res.status(400).json({ error: "E-mail is invalid" });
-    }
-
-    const userQuery = await db.query(usersQueries.findByEmail(email));
-    if (!userQuery.rows[0]) {
-      return res.status(404).json({ error: "User does not exist" });
-    }
-
-    const findFinancesText = "SELECT * FROM finances WHERE id=$1 RETURNING *";
-    const findFinancesValue = [Number(id)];
-    const financeItemQuery = await db.query(
-      findFinancesText,
-      findFinancesValue
-    );
-
-    if (!financeItemQuery.rows[0]) {
-      return res.status(400).json({ error: "Finance not found" });
-    }
-
-    if (!financeItemQuery.rows[0].user_id !== userQuery.rows[0].id) {
-      return res.status(401).json({ error: "Finance does not belong to user" });
-    }
-
-    const text = "DELETE FROM finances WHERE id=$1 RETURNING *";
-    const values = [Number(id)];
-    const deleteResponse = await db.query(text, values);
-
-    if (!deleteResponse.rows[0]) {
-      return res.status(404).json({ error: "Finance not deleted" });
-    }
-
-    return res.status(200).json(deleteResponse.rows);
-  } catch (error) {
-    return res.status(500).json(error);
-  }
-});
-
 router.get("/", async (req, res) => {
   try {
-    const email = req.headers.email;
+    const currentEmail = req.headers.email;
     const { date } = req.query;
+
+    if (
+      currentEmail.length < 5 ||
+      !currentEmail.includes("@") ||
+      !currentEmail.includes(".")
+    ) {
+      return res.status(400).json({ error: "E-mail is invalid" });
+    }
 
     if (!date || date.length != 10) {
       return res.status(400).json({
@@ -125,13 +86,9 @@ router.get("/", async (req, res) => {
       });
     }
 
-    if (email.length < 5 || !email.includes("@")) {
-      return res.status(400).json({ error: "E-mail is invalid" });
-    }
-
-    const userQuery = await db.query(usersQueries.findByEmail(email));
-    if (!userQuery.rows[0]) {
-      return res.status(404).json({ error: "User does not exist" });
+    const userFound = await db.query(usersQueries.findByEmail(currentEmail));
+    if (!userFound.rows[0]) {
+      return res.status(404).json({ error: "User not found" });
     }
 
     const dateObject = new Date(date);
@@ -143,10 +100,59 @@ router.get("/", async (req, res) => {
 
     const text =
       "SELECT fin.title, fin.date, fin.user_id, fin category_id, cat.name FROM finances as fin JOIN categories as cat ON fin.category_id = cat.id WHERE fin.user_id=$1 AND fin.date BETWEEN $2 AND $3 ORDER BY fin.date ASC";
-    const values = (userQuery.rows[0].id, initDate, finalDate);
-    const FinancesQuery = await db.query(text, values);
+    const values = (userFound.rows[0].id, initDate, finalDate);
 
-    return res.status(200).json(FinancesQuery.rows);
+    const getResponse = await db.query(text, values);
+
+    return res.status(200).json(getResponse.rows);
+  } catch (error) {
+    return res.status(500).json(error);
+  }
+});
+
+router.delete("/:id", async (req, res) => {
+  try {
+    const currentEmail = req.headers.email;
+    const { id } = req.params;
+
+    if (!id) {
+      return res.status(400).send({ error: "Param id is mandatory" });
+    }
+
+    if (
+      currentEmail.length < 5 ||
+      !currentEmail.includes("@") ||
+      !currentEmail.includes(".")
+    ) {
+      return res.status(400).json({ error: "E-mail is invalid" });
+    }
+
+    const userFound = await db.query(usersQueries.findByEmail(currentEmail));
+    if (!userFound.rows[0]) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    const financeFound = await db.query(
+      "SELECT * FROM finances WHERE id=$1 RETURNING *",
+      Number(id)
+    );
+    if (!financeFound.rows[0]) {
+      return res.status(400).json({ error: "Finance not found" });
+    }
+
+    if (!financeFound.rows[0].user_id !== userFound.rows[0].id) {
+      return res.status(401).json({ error: "Finance does not belong to user" });
+    }
+
+    const text = "DELETE FROM finances WHERE id=$1 RETURNING *";
+    const values = [Number(id)];
+
+    const deleteResponse = await db.query(text, values);
+    if (!deleteResponse.rows[0]) {
+      return res.status(400).json({ error: "Finance not deleted" });
+    }
+
+    return res.status(200).json(deleteResponse.rows);
   } catch (error) {
     return res.status(500).json(error);
   }
