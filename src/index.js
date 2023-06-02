@@ -7,10 +7,10 @@ const routesUsers = require("./routes/users");
 const routesFinances = require("./routes/finances");
 
 const app = express();
+const port = process.env.PORT || 3333;
+
 app.use(express.json());
 app.use(cors({ origin: "*" }));
-
-const port = process.env.PORT;
 
 app.use("/categories", routesCategories);
 app.use("/users", routesUsers);
@@ -20,14 +20,11 @@ app.get("/", (req, res) => {
   res.send("It is a wallet app API");
 });
 
-app.listen(port, () => {
-  db.connect()
-    .then(() => {
-      console.log("DB connected");
-    })
-    .catch((error) => {
-      throw new Error(error);
-    });
-
-  console.log(`Example app listening on port ${port}`);
+app.listen(port, "0.0.0.0", async () => {
+  try {
+    await db.connect();
+    console.log(`App listening on port ${port}`);
+  } catch (error) {
+    console.log(error);
+  }
 });
