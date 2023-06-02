@@ -3,6 +3,40 @@ const router = express.Router();
 const db = require("../db");
 const usersQueries = require("../queries/users");
 
+router.post("/", async (req, res) => {
+  try {
+    const { name, email } = req.body;
+    if (name.length < 3) {
+      return res
+        .status(400)
+        .json({ error: "name should have more than 3 characters" });
+    }
+
+    if (email.length < 5 || !email.includes("@") || !email.includes(".")) {
+      return res.status(400).json({ error: "E-mail is invalid" });
+    }
+
+    const query = usersQueries.findByEmail(email);
+
+    const alreadyExists = await db.query(query);
+    if (alreadyExists.rows[0]) {
+      return res.status(403).json({ error: "User already exist" });
+    }
+
+    const text = "INSERT INTO users(name, email) VALUES($1, $2) RETURNING *";
+    const values = [name, email];
+
+    const createResponse = await db.query(text, values);
+    if (!createResponse.rows[0]) {
+      return res.status(400).json({ error: "User not created" });
+    }
+
+    return res.status(201).json(createResponse.rows[0]);
+  } catch (error) {
+    return res.status(500).json(error);
+  }
+});
+
 router.get("/", async (req, res) => {
   try {
     const { email } = req.query;
@@ -13,8 +47,8 @@ router.get("/", async (req, res) => {
 
     const query = usersQueries.findByEmail(email);
 
-    const exists = await db.query(query);
-    if (!exists.rows[0]) {
+    const found = await db.query(query);
+    if (!found.rows[0]) {
       return res.status(404).json({ error: "User not found" });
     }
 
@@ -43,19 +77,30 @@ router.put("/", async (req, res) => {
         .json({ error: "name should have more than 3 characters" });
     }
 
-    if (email.length < 5 || !email.includes("@")) {
+    if (email.length < 5 || !email.includes("@") || !email.includes(".")) {
       return res.status(400).json({ error: "E-mail is invalid" });
     }
 
-    if (currentEmail.length < 5 || !currentEmail.includes("@")) {
+    if (
+      currentEmail.length < 5 ||
+      !currentEmail.includes("@") ||
+      !currentEmail.includes(".")
+    ) {
       return res.status(400).json({ error: "E-mail is invalid" });
     }
 
-    const query = usersQueries.findByEmail(currentEmail);
-    const alreadyExists = await db.query(query);
+    const currentEmailQuery = usersQueries.findByEmail(currentEmail);
 
+    const found = await db.query(currentEmailQuery);
+    if (!found.rows[0]) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    const emailQuery = usersQueries.findByEmail(email);
+
+    const alreadyExists = await db.query(emailQuery);
     if (!alreadyExists.rows[0]) {
-      return res.status(404).json({ error: "User does not exist" });
+      return res.status(400).json({ error: "User already exists" });
     }
 
     const text =
@@ -73,40 +118,6 @@ router.put("/", async (req, res) => {
   }
 });
 
-router.post("/", async (req, res) => {
-  try {
-    const { name, email } = req.body;
-    if (name.length < 3) {
-      return res
-        .status(400)
-        .json({ error: "name should have more than 3 characters" });
-    }
-
-    if (email.length < 5 || !email.includes("@") || !email.includes(".")) {
-      return res.status(400).json({ error: "E-mail is invalid" });
-    }
-
-    const query = usersQueries.findByEmail(email);
-    const alreadyExists = await db.query(query);
-
-    if (alreadyExists.rows[0]) {
-      return res.status(403).json({ error: "User already exist" });
-    }
-
-    const text = "INSERT INTO users(name, email) VALUES($1, $2) RETURNING *";
-    const values = [name, email];
-    const createResponse = await db.query(text, values);
-
-    if (!createResponse.rows[0]) {
-      return res.status(400).json({ error: "User not created" });
-    }
-
-    return res.status(201).json(createResponse.rows[0]);
-  } catch (error) {
-    return res.status(500).json(error);
-  }
-});
-
 router.delete("/", async (req, res) => {
   try {
     const currentEmail = req.headers.email;
@@ -115,22 +126,33 @@ router.delete("/", async (req, res) => {
     if (name.length < 3) {
       return res
         .status(400)
-        .json({ error: "name should have more than 3 characters" });
+        .json({ error: "Name should have more than 3 characters" });
     }
 
-    if (email.length < 5 || !email.includes("@")) {
+    if (email.length < 5 || !email.includes("@") || !email.includes(".")) {
       return res.status(400).json({ error: "E-mail is invalid" });
     }
 
-    if (currentEmail.length < 5 || !currentEmail.includes("@")) {
+    if (
+      currentEmail.length < 5 ||
+      !currentEmail.includes("@") ||
+      !currentEmail.includes(".")
+    ) {
       return res.status(400).json({ error: "E-mail is invalid" });
     }
 
-    const query = usersQueries.findByEmail(currentEmail);
-    const alreadyExists = await db.query(query);
+    const currentEmailQuery = usersQueries.findByEmail(currentEmail);
 
+    const found = await db.query(currentEmailQuery);
+    if (!found.rows[0]) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    const emailQuery = usersQueries.findByEmail(email);
+
+    const alreadyExists = await db.query(emailQuery);
     if (!alreadyExists.rows[0]) {
-      return res.status(404).json({ error: "User doesn't exist" });
+      return res.status(400).json({ error: "User already exists" });
     }
 
     const text = "DELETE FROM users WHERE id=$1 RETURNING *";
