@@ -1,25 +1,46 @@
 # Wallet App API
 
-## Intro
+This is a finances API created using Node.js, Express and Postgres. The main goal is create an aplication that controls user finances.
 
-This is and API created usind Node.js, Express and PostGresSQL.
-The main goal is create an aplication that controls user finances
+- Create, Get, Edit and Delete users
+- Get Categories
+- Create, Get and Delete finances
 
-## Requirements
+## Main Concepts Apllied
+
+- SQL
+- Query
+- JOIN
+- CRUD
+- Data Validation
+- API Rest
+- Express
+- Nodemon
+
+## Live Application
+
+[api.wallet-app.ispapps.com](Https://api.wallet-app.ispapps.com)
+
+This api has a prod link deployed with Railway
+
+## Documentation
+
+Documentation explain the routes:
+
+Use insomnia to import the file below:
+
+```
+https://github.com/IgorSprovieri/wallet-app-API/blob/main/Insomnia
+```
+
+## Requirements To Run
 
 - Node.js
 - Docker
 
-## Documentation:
+## Getting Started
 
-```
-Use insomnia to import the file below:
-https://github.com/IgorSprovieri/wallet-app-API/blob/main/Insomnia
-```
-
-## Steps to run the project
-
-1. Clone the project
+1. Clone the repo
 
 ```
 git clone https://github.com/IgorSprovieri/wallet-app-API.git
@@ -60,7 +81,7 @@ Observation: if dont't stop press CTRL + C
 npm run start
 ```
 
-7. Run the project with nodemon
+7. Run the project on dev mode
 
 ```
 npm run start:dev
@@ -68,8 +89,8 @@ npm run start:dev
 
 ## Author
 
-<img src="./public/images/My image.jpeg" width="22%">
+<img src="./public/images/myImage.jpeg" width="22%">
 
 ### _Igor Sprovieri Pereira_
 
-Programming student since 2013, started working with Unity C# in 2020, paticipated in 16 team projects as a freelancer and his own game studio. At this time, he was a tutor on Crie Seus Jogos company, helping students and writing articles to company's website. In 2022 he decided to learn web development with HTML, CSS and JS. Actually he is fullstack programmer and he is specializing in react.js, node.js, docker, mongoose, postgres and sequelize.
+In 2013 I learned to programming games how as a hobbie, in 2020 I started to work on this area, I did some freelancers, opened my game studio and I was a writter for over a year on site crieseusjogos.com. In 2022 I decided to go a web developer professional and today I am fullstack with react and node
