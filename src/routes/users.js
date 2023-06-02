@@ -3,35 +3,30 @@ const router = express.Router();
 const db = require("../db");
 const usersQueries = require("../queries/users");
 
-router.post("/", async (req, res) => {
+router.get("/", async (req, res) => {
   try {
-    const { name, email } = req.body;
-    if (name.length < 3) {
-      return res
-        .status(400)
-        .json({ error: "name should have more than 3 characters" });
-    }
+    const { email } = req.query;
 
-    if (email.length < 5 || !email.includes("@")) {
+    if (email.length < 5 || !email.includes("@") || !email.includes(".")) {
       return res.status(400).json({ error: "E-mail is invalid" });
     }
 
     const query = usersQueries.findByEmail(email);
-    const alreadyExists = await db.query(query);
 
-    if (alreadyExists.rows[0]) {
-      return res.status(403).json({ error: "User already exist" });
+    const exists = await db.query(query);
+    if (!exists.rows[0]) {
+      return res.status(404).json({ error: "User not found" });
     }
 
-    const text = "INSERT INTO users(name, email) VALUES($1, $2) RETURNING *";
-    const values = [name, email];
-    const createResponse = await db.query(text, values);
+    const text = "SELECT * FROM users WHERE email = $1";
+    const values = [email];
 
-    if (!createResponse.rows[0]) {
+    const getResponse = await db.query(text, values);
+    if (!getResponse.rows[0]) {
       return res.status(400).json({ error: "User not created" });
     }
 
-    return res.status(200).json(createResponse.rows[0]);
+    return res.status(200).json(getResponse.rows[0]);
   } catch (error) {
     return res.status(500).json(error);
   }
@@ -80,20 +75,33 @@ router.put("/", async (req, res) => {
 
 router.post("/", async (req, res) => {
   try {
-    const { email } = req.query;
+    const { name, email } = req.body;
+    if (name.length < 3) {
+      return res
+        .status(400)
+        .json({ error: "name should have more than 3 characters" });
+    }
 
-    if (!email || email.length < 5 || !email.includes("@")) {
+    if (email.length < 5 || !email.includes("@") || !email.includes(".")) {
       return res.status(400).json({ error: "E-mail is invalid" });
     }
 
     const query = usersQueries.findByEmail(email);
-    const userExists = await db.query(query);
+    const alreadyExists = await db.query(query);
 
-    if (!userExists.rows[0]) {
-      return res.status(404).json({ error: "User does not exist" });
+    if (alreadyExists.rows[0]) {
+      return res.status(403).json({ error: "User already exist" });
     }
 
-    return res.status(200).json(userExists.rows[0]);
+    const text = "INSERT INTO users(name, email) VALUES($1, $2) RETURNING *";
+    const values = [name, email];
+    const createResponse = await db.query(text, values);
+
+    if (!createResponse.rows[0]) {
+      return res.status(400).json({ error: "User not created" });
+    }
+
+    return res.status(201).json(createResponse.rows[0]);
   } catch (error) {
     return res.status(500).json(error);
   }
