@@ -1,7 +1,7 @@
 {
   "name": "wallet-app-api",
   "version": "1.0.0",
-  "description": "wallet finances app API using Node.js and Postgres",
+  "description": "Wallet finances app API using Node.js and Postgres",
   "main": "index.js",
   "scripts": {
     "start": "node src/index.js",

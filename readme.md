@@ -1,10 +1,23 @@
 # Wallet App API
 
-This is a finances API created using Node.js, Express and Postgres. The main goal is create an aplication that controls user finances.
+This is a finances API created using Node, Express and Postgres. The main goal is create an aplication that controls user finances.
 
 - Create, Get, Edit and Delete users
 - Get Categories
 - Create, Get and Delete finances
+
+## Documentation
+
+Use insomnia to import the file below:
+
+```
+https://github.com/IgorSprovieri/wallet-app-API/blob/main/Insomnia
+```
+
+## Used Technologies
+
+- Express
+- Postgres
 
 ## Main Concepts Apllied
 
@@ -17,26 +30,10 @@ This is a finances API created using Node.js, Express and Postgres. The main goa
 - Express
 - Nodemon
 
-## Live Application
-
-[api.wallet-app.ispapps.com](Https://api.wallet-app.ispapps.com)
-
-This api has a prod link deployed with Railway
-
-## Documentation
-
-Documentation explain the routes:
-
-Use insomnia to import the file below:
-
-```
-https://github.com/IgorSprovieri/wallet-app-API/blob/main/Insomnia
-```
-
 ## Requirements To Run
 
-- Node.js
-- Docker
+- Node.js ([nodejs.org](https://nodejs.org/en/))
+- Docker ([www.docker.com](https://www.docker.com))
 
 ## Getting Started
 
@@ -56,7 +53,7 @@ npm install
 3. Create an PostGres on docker
 
 ```
-Example: docker run --name postgres-finances -e POSTGRES_PASSWORD=docker -e POSTGRES_USER=docker -p 5432:5432 -d -t postgres
+Example: docker run --name finances -e POSTGRES_PASSWORD=docker -e POSTGRES_USER=docker -p 5432:5432 -d -t postgres
 ```
 
 4. Create a .env file following the example
@@ -89,8 +86,8 @@ npm run start:dev
 
 ## Author
 
-<img src="./public/images/myImage.jpeg" width="22%">
+<img src="https://media.licdn.com/dms/image/D4D03AQFdLhogHwQVog/profile-displayphoto-shrink_800_800/0/1672976913935?e=1700092800&v=beta&t=wpMCLFnfgmrz3HXW-y9AdaXBSWw7gstVsPHTtTgcyuU" alt="Igor Sprovieri" style="width: 30%; border-radius: 50px;">
 
 ### _Igor Sprovieri Pereira_
 
-In 2013 I learned to programming games how as a hobbie, in 2020 I started to work on this area, I did some freelancers, opened my game studio and I was a writter for over a year on site crieseusjogos.com. In 2022 I decided to go a web developer professional and today I am fullstack with react and node
+After working as a Unity developer for 3 years, I migrated to the web development area and currently have Fullstack knowledge with React and Node. I have an app for the Apple Store and Google Play and a library for creating web pages inspired by React.
