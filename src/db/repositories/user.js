@@ -17,10 +17,10 @@ class UserRepository {
     return rows[0];
   }
 
-  async update(name, newEmail, user_id) {
+  async update(newName, newEmail, user_id) {
     const query =
       "UPDATE users SET name=$1, email=$2 WHERE user_id=$3 RETURNING *";
-    const values = [name, newEmail, user_id];
+    const values = [newName, newEmail, user_id];
 
     const { rows } = await db.query(query, values);
     return rows[0];

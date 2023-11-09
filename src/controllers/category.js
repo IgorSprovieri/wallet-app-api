@@ -6,7 +6,7 @@ class CategoryController {
     const { user_id } = req;
 
     try {
-      const categories = categoryRepository.get(user_id);
+      const categories = await categoryRepository.get(user_id);
 
       return res.status(200).json(categories);
     } catch (error) {
@@ -40,7 +40,40 @@ class CategoryController {
         return res.status(400).json({ error: "Category not created" });
       }
 
-      return res.status(200).json(categoryCreated);
+      return res.status(201).json(categoryCreated);
+    } catch (error) {
+      return res.status(500).json({ error: err?.message });
+    }
+  }
+
+  async put(req, res) {
+    const { id: category_id } = req.params;
+    const { name: newName, icon_url: newIcon_url } = req.body;
+
+    try {
+      validate.categoryId(category_id);
+      validate.name(newName);
+      validate.iconUrl(newIcon_url);
+    } catch (error) {
+      return res.status(400).json({ error: err?.message });
+    }
+
+    try {
+      const found = await categoryRepository.findById(category_id);
+      if (!found) {
+        return res.status(404).json({ error: "Category not found" });
+      }
+
+      const categoryUpdated = await categoryRepository.update(
+        newName,
+        newIcon_url,
+        category_id
+      );
+      if (categoryUpdated) {
+        return res.status(400).json({ error: "Category not updated" });
+      }
+
+      return res.status(200).json(categoryUpdated);
     } catch (error) {
       return res.status(500).json({ error: err?.message });
     }
