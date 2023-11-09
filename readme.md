@@ -53,14 +53,14 @@ npm install
 3. Create an PostGres on docker
 
 ```
-Example: docker run --name finances -e POSTGRES_PASSWORD=docker -e POSTGRES_USER=docker -p 5432:5432 -d -t postgres
+Example: docker run --name finapp-db -e POSTGRES_PASSWORD=docker -e POSTGRES_USER=docker -p 5432:5432 -d -t postgres
 ```
 
 4. Create a .env file following the example
 
 DB_USER=docker
 DB_PASSWORD=docker
-DB_NAME=finances
+DB_NAME=finapp-db
 DB_HOST=localhost
 DB_PORT=5432
 

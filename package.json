@@ -4,9 +4,9 @@
   "description": "Wallet finances app API using Node.js and Postgres",
   "main": "index.js",
   "scripts": {
+    "dev": "nodemon src/index.js",
     "start": "node src/index.js",
-    "start:dev": "nodemon src/index.js",
-    "config:init": "node src/config/init.js"
+    "db:create": "node src/db/config/create.js"
   },
   "author": "Igor Sprovieri",
   "license": "ISC",
