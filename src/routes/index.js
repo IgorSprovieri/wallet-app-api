@@ -16,7 +16,9 @@ router.use(authMiddleware.validate);
 
 router.put("/user", userController.put);
 router.delete("/user", userController.delete);
+
 router.get("/categories", categoryController.get);
+router.post("/category", categoryController.post);
 
 router.get("/finances", financeController.get);
 router.post("/finance", financeController.post);
