@@ -47,6 +47,7 @@ class CategoryController {
   }
 
   async put(req, res) {
+    const { user_id } = req;
     const { id: category_id } = req.params;
     const { name: newName, icon_url: newIcon_url } = req.body;
 
@@ -59,9 +60,15 @@ class CategoryController {
     }
 
     try {
-      const found = await categoryRepository.findById(category_id);
-      if (!found) {
+      const category = await categoryRepository.findById(category_id);
+      if (!category) {
         return res.status(404).json({ error: "Category not found" });
+      }
+
+      if (!category.user_id !== user_id) {
+        return res
+          .status(401)
+          .json({ error: "Category does not belong to this user" });
       }
 
       const categoryUpdated = await categoryRepository.update(
@@ -74,6 +81,39 @@ class CategoryController {
       }
 
       return res.status(200).json(categoryUpdated);
+    } catch (error) {
+      return res.status(500).json({ error: err?.message });
+    }
+  }
+
+  async delete(req, res) {
+    const { user_id } = req;
+    const { id: category_id } = req.params;
+
+    try {
+      validate.categoryId(category_id);
+    } catch (error) {
+      return res.status(400).json({ error: err?.message });
+    }
+
+    try {
+      const category = await categoryRepository.findById(category_id);
+      if (!category) {
+        return res.status(404).json({ error: "Category not found" });
+      }
+
+      if (!category.user_id !== user_id) {
+        return res
+          .status(401)
+          .json({ error: "Category does not belong to this user" });
+      }
+
+      const categoryDeleted = await categoryRepository.delete(category_id);
+      if (categoryDeleted) {
+        return res.status(400).json({ error: "Category not deleted" });
+      }
+
+      return res.status(200).json(categoryDeleted);
     } catch (error) {
       return res.status(500).json({ error: err?.message });
     }

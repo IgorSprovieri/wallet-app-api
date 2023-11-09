@@ -17,11 +17,13 @@ router.use(authMiddleware.validate);
 router.put("/user", userController.put);
 router.delete("/user", userController.delete);
 
-router.get("/categories", categoryController.get);
 router.post("/category", categoryController.post);
+router.get("/categories", categoryController.get);
+router.put("/category", categoryController.put);
+router.delete("/category", categoryController.delete);
 
-router.get("/finances", financeController.get);
 router.post("/finance", financeController.post);
+router.get("/finances", financeController.get);
 router.delete("/finance/:id", financeController.delete);
 
 module.exports = router;

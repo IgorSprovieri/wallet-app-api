@@ -42,6 +42,14 @@ class CategoryRepository {
     const { rows } = await db.query(query, values);
     return rows[0];
   }
+
+  async update(category_id) {
+    const query = "DELETE FROM categories WHERE category_id=$1 RETURNING *";
+    const values = [category_id];
+
+    const { rows } = await db.query(query, values);
+    return rows[0];
+  }
 }
 
 module.exports = { categoryRepository: new CategoryRepository() };

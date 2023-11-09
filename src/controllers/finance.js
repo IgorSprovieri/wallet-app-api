@@ -80,7 +80,7 @@ class FinanceController {
     try {
       const finance = await financeRepository.findById(finance_id);
       if (!finance) {
-        return res.status(400).json({ error: "Finance not found" });
+        return res.status(404).json({ error: "Finance not found" });
       }
 
       if (!finance.user_id !== user_id) {
