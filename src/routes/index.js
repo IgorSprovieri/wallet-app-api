@@ -11,6 +11,7 @@ router.get("/", (req, res) => {
 });
 
 router.post("/user", userController.post);
+router.get("/user", userController.get);
 
 router.use(authMiddleware.validate);
 

@@ -29,6 +29,27 @@ class UserController {
     }
   }
 
+  async get(req, res) {
+    const { email } = req.query;
+
+    try {
+      validate.email(email);
+    } catch (err) {
+      return res.status(400).json({ error: err?.message });
+    }
+
+    try {
+      const user = await userRepository.findByEmail(email);
+      if (!user) {
+        return res.status(404).json({ error: "User not found" });
+      }
+
+      return res.status(201).json(user);
+    } catch (err) {
+      return res.status(500).json({ error: err?.message });
+    }
+  }
+
   async put(req, res) {
     const { user_id, currentEmail } = req;
     const { name: newName, email: newEmail } = req.body;
