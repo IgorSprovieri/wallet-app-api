@@ -3,8 +3,8 @@
 This is a finances API created using Node, Express and Postgres. The main goal is create an aplication that controls user finances.
 
 - Create, Get, Edit and Delete users
-- Get Categories
-- Create, Get and Delete finances
+- Create, Get, Edit and Delete Categories
+- Create, Get, Edit and Delete finances
 
 ## Documentation
 
