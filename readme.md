@@ -11,11 +11,12 @@ This is a finances API created using Node, Express and Postgres. The main goal i
 Use insomnia to import the file below:
 
 ```
-https://github.com/IgorSprovieri/wallet-app-API/blob/main/Insomnia
+https://github.com/IgorSprovieri/wallet-app-API/blob/main/Insomnia.json
 ```
 
 ## Used Technologies
 
+- Node
 - Express
 - Postgres
 
@@ -27,7 +28,7 @@ https://github.com/IgorSprovieri/wallet-app-API/blob/main/Insomnia
 - CRUD
 - Data Validation
 - API Rest
-- Express
+- Middlewares
 - Nodemon
 
 ## Requirements To Run
@@ -37,57 +38,59 @@ https://github.com/IgorSprovieri/wallet-app-API/blob/main/Insomnia
 
 ## Getting Started
 
-1. Clone the repo
+1- Clone the repo
 
-```
+```bash
 git clone https://github.com/IgorSprovieri/wallet-app-API.git
 ```
 
-2. Navigate to project folder and Install Dependencies
+2- Navigate to project folder and Install Dependencies
 
-```
+```bash
 cd wallet-app-API
 npm install
 ```
 
-3. Create an PostGres on docker
+3- Create an PostGres on docker
 
+```bash
+Example: docker run --name wallet-app-db -e POSTGRES_PASSWORD=docker -e POSTGRES_USER=docker -p 5432:5432 -d -t postgres
 ```
-Example: docker run --name finapp-db -e POSTGRES_PASSWORD=docker -e POSTGRES_USER=docker -p 5432:5432 -d -t postgres
-```
 
-4. Create a .env file following the example
+4- Create a .env file following the example
 
+```json
 DB_USER=docker
 DB_PASSWORD=docker
-DB_NAME=finapp-db
+DB_NAME=docker
 DB_HOST=localhost
 DB_PORT=5432
-
-5. Run config script to create database and table:
-
 ```
-npm run config:init
+
+5- Run script to create tables:
+
+```bash
+npm run db:create
+```
+
 Observation: if dont't stop press CTRL + C
 
-```
+6- Run the project
 
-6. Run the project
-
-```
+```bash
 npm run start
 ```
 
-7. Run the project on dev mode
+7- Run the project on dev mode
 
-```
-npm run start:dev
+```bash
+npm run dev
 ```
 
 ## Author
 
-<img src="https://media.licdn.com/dms/image/D4D03AQFdLhogHwQVog/profile-displayphoto-shrink_800_800/0/1672976913935?e=1700092800&v=beta&t=wpMCLFnfgmrz3HXW-y9AdaXBSWw7gstVsPHTtTgcyuU" alt="Igor Sprovieri" style="width: 30%; border-radius: 50px;">
+<img src="https://media.licdn.com/dms/image/D4D03AQFdLhogHwQVog/profile-displayphoto-shrink_800_800/0/1672976915799?e=1704931200&v=beta&t=3a6TEbH_5gfnLsQ7j-7PTSdWbDnUAz6wd4FT1RNpnR4" alt="Igor Sprovieri" style="width: 30%; border-radius: 50px;">
 
 ### _Igor Sprovieri Pereira_
 
-After working as a Unity developer for 3 years, I migrated to the web development area and currently have Fullstack knowledge with React and Node. I have an app for the Apple Store and Google Play and a library for creating web pages inspired by React.
+After working as a Unity developer for 3 years, I migrated to the web development area and currently have Fullstack and Mobile knowledge with React, React Native and Node.
