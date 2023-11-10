@@ -27,6 +27,15 @@ class FinanceRepository {
     return rows[0];
   }
 
+  async update(finance_id, category_id, title, date, value) {
+    const query =
+      "UPDATE finances SET category_id=$1 date=$2 title=$3 value=$4 WHERE finance_id=$5 RETURNING *";
+    const values = [category_id, title, date, value, finance_id];
+
+    const { rows } = await db.query(query, values);
+    return rows[0];
+  }
+
   async delete(finance_id) {
     const query = "DELETE FROM finances WHERE finance_id=$1 RETURNING *";
     const values = [Number(finance_id)];

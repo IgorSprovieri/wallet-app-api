@@ -25,6 +25,7 @@ router.delete("/category", categoryController.delete);
 
 router.post("/finance", financeController.post);
 router.get("/finances", financeController.get);
+router.put("/finance/:id", financeController.put);
 router.delete("/finance/:id", financeController.delete);
 
 module.exports = router;

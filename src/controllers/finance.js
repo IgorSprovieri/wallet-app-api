@@ -4,7 +4,7 @@ const { financeRepository } = require("../db/repositories/finance");
 class FinanceController {
   async post(req, res) {
     const { user_id } = req;
-    const { category_id, title, date, value } = req;
+    const { category_id, title, date, value } = req.body;
 
     try {
       validate.categoryId(category_id);
@@ -14,6 +14,7 @@ class FinanceController {
     } catch (err) {
       return res.status(400).json({ error: err?.message });
     }
+
     try {
       const category = await db.query(categoriesQueries.findById(category_id));
       if (!category) {
@@ -62,6 +63,62 @@ class FinanceController {
       );
 
       return res.status(200).json(finances.rows);
+    } catch (err) {
+      return res.status(500).json({ error: err?.message });
+    }
+  }
+
+  async put(req, res) {
+    const { user_id } = req;
+    const { id: finance_id } = req.params;
+    const {
+      category_id: newCategory_id,
+      title: newTitle,
+      date: newDate,
+      value: newValue,
+    } = req.body;
+
+    try {
+      validate.categoryId(newCategory_id);
+      validate.title(newTitle);
+      validate.date(newDate);
+      validate.value(newValue);
+    } catch (err) {
+      return res.status(400).json({ error: err?.message });
+    }
+
+    try {
+      const finance = await financeRepository.findById(finance_id);
+      if (!finance) {
+        return res.status(404).json({ error: "Finance not found" });
+      }
+
+      if (!finance.user_id !== user_id) {
+        return res
+          .status(401)
+          .json({ error: "Finance does not belong to this user" });
+      }
+
+      const category = await db.query(
+        categoriesQueries.findById(newCategory_id)
+      );
+
+      if (!category) {
+        return res.status(404).json({ error: "Category not found" });
+      }
+
+      const financeUpdated = await financeRepository.update(
+        finance_id,
+        newCategory_id,
+        newTitle,
+        newDate,
+        newValue
+      );
+      if (!financeUpdated) {
+        return res.status(400).json({ error: "Finance not updated" });
+      }
+
+      return res.status(200).json(financeUpdated);
     } catch (err) {
       return res.status(500).json({ error: err?.message });
     }
