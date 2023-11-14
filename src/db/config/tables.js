@@ -8,7 +8,7 @@ const createTablesQueries = {
   createCategories: () => {
     return {
       name: "create-categories",
-      text: "CREATE TABLE categories(category_id SERIAL PRIMARY KEY NOT NULL, user_id INT, name TEXT NOT NULL, icon_url TEXT,CONSTRAINT fk_users FOREIGN KEY(user_id) REFERENCES users(user_id) ON DELETE CASCADE)",
+      text: "CREATE TABLE categories(category_id SERIAL PRIMARY KEY NOT NULL, user_id INT, name TEXT NOT NULL, color TEXT, icon_url TEXT,CONSTRAINT fk_users FOREIGN KEY(user_id) REFERENCES users(user_id) ON DELETE CASCADE)",
     };
   },
   createFinances: () => {

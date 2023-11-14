@@ -17,6 +17,12 @@ class Validate {
     }
   }
 
+  color(color) {
+    if (!color || color.length !== 7 || !color.includes("#")) {
+      throw new Error("Color is invalid");
+    }
+  }
+
   iconUrl(icon_url) {
     if (!icon_url || !icon_url.includes(".") || !icon_url.includes("/")) {
       throw new Error("Icon url is invalid");

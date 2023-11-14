@@ -16,10 +16,11 @@ class CategoryController {
 
   async post(req, res) {
     const { user_id } = req;
-    const { name, icon_url } = req.body;
+    const { name, color, icon_url } = req.body;
 
     try {
       validate.name(name);
+      validate.color(color);
       validate.iconUrl(icon_url);
     } catch (error) {
       return res.status(400).json({ error: err?.message });
@@ -34,6 +35,7 @@ class CategoryController {
       const categoryCreated = await categoryRepository.create(
         user_id,
         name,
+        color,
         icon_url
       );
       if (categoryCreated) {
@@ -49,11 +51,12 @@ class CategoryController {
   async put(req, res) {
     const { user_id } = req;
     const { id: category_id } = req.params;
-    const { name: newName, icon_url: newIcon_url } = req.body;
+    const { name: newName, color: newColor, icon_url: newIcon_url } = req.body;
 
     try {
       validate.categoryId(category_id);
       validate.name(newName);
+      validate.color(newColor);
       validate.iconUrl(newIcon_url);
     } catch (error) {
       return res.status(400).json({ error: err?.message });
@@ -73,6 +76,7 @@ class CategoryController {
 
       const categoryUpdated = await categoryRepository.update(
         newName,
+        newColor,
         newIcon_url,
         category_id
       );

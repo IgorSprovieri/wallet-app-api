@@ -25,25 +25,25 @@ class CategoryRepository {
     return rows[0];
   }
 
-  async create(user_id, name, icon_url) {
+  async create(user_id, name, color, icon_url) {
     const query =
-      "INSERT INTO categories(user_id, name, icon_url) VALUES($1, $2, $3) RETURNING *";
-    const values = [user_id, name, icon_url];
+      "INSERT INTO categories(user_id, name, color, icon_url) VALUES($1, $2, $3, $4) RETURNING *";
+    const values = [user_id, name, color, icon_url];
 
     const { rows } = await db.query(query, values);
     return rows[0];
   }
 
-  async update(newName, newIcon_url, category_id) {
+  async update(newName, newColor, newIcon_url, category_id) {
     const query =
-      "UPDATE users SET name=$1, icon_url=$2 WHERE category_id=$3 RETURNING *";
-    const values = [newName, newIcon_url, category_id];
+      "UPDATE users SET name=$1, color=$2, icon_url=$3  WHERE category_id=$4 RETURNING *";
+    const values = [newName, newColor, newIcon_url, category_id];
 
     const { rows } = await db.query(query, values);
     return rows[0];
   }
 
-  async update(category_id) {
+  async delete(category_id) {
     const query = "DELETE FROM categories WHERE category_id=$1 RETURNING *";
     const values = [category_id];
 

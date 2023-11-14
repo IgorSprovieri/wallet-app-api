@@ -54,7 +54,7 @@ npm install
 3- Create an PostGres on docker
 
 ```bash
-Example: docker run --name wallet-app-db -e POSTGRES_PASSWORD=docker -e POSTGRES_USER=docker -p 5432:5432 -d -t postgres
+docker run --name wallet-app-db -e POSTGRES_PASSWORD=docker -e POSTGRES_USER=docker -p 5432:5432 -d -t postgres
 ```
 
 4- Create a .env file following the example
