@@ -38,7 +38,7 @@ class CategoryController {
         color,
         icon_url
       );
-      if (categoryCreated) {
+      if (!categoryCreated) {
         return res.status(400).json({ error: "Category not created" });
       }
 
