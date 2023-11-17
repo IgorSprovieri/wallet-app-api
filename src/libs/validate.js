@@ -18,7 +18,7 @@ class Validate {
   }
 
   color(color) {
-    if (!color || color.length !== 7 || !color.includes("#")) {
+    if (!color || !color.includes("#")) {
       throw new Error("Color is invalid");
     }
   }
