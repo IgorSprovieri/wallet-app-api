@@ -68,7 +68,7 @@ class CategoryController {
         return res.status(404).json({ error: "Category not found" });
       }
 
-      if (!category.user_id !== user_id) {
+      if (category.user_id !== user_id) {
         return res
           .status(401)
           .json({ error: "Category does not belong to this user" });
@@ -80,7 +80,7 @@ class CategoryController {
         newIcon_url,
         category_id
       );
-      if (categoryUpdated) {
+      if (!categoryUpdated) {
         return res.status(400).json({ error: "Category not updated" });
       }
 
@@ -113,7 +113,7 @@ class CategoryController {
       }
 
       const categoryDeleted = await categoryRepository.delete(category_id);
-      if (categoryDeleted) {
+      if (!categoryDeleted) {
         return res.status(400).json({ error: "Category not deleted" });
       }
 

@@ -36,7 +36,7 @@ class CategoryRepository {
 
   async update(newName, newColor, newIcon_url, category_id) {
     const query =
-      "UPDATE users SET name=$1, color=$2, icon_url=$3  WHERE category_id=$4 RETURNING *";
+      "UPDATE categories SET name=$1, color=$2, icon_url=$3 WHERE category_id=$4 RETURNING *";
     const values = [newName, newColor, newIcon_url, category_id];
 
     const { rows } = await db.query(query, values);
