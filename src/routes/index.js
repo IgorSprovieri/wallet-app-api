@@ -20,8 +20,8 @@ router.delete("/user", userController.delete);
 
 router.post("/category", categoryController.post);
 router.get("/categories", categoryController.get);
-router.put("/category", categoryController.put);
-router.delete("/category", categoryController.delete);
+router.put("/category/:id", categoryController.put);
+router.delete("/category/:id", categoryController.delete);
 
 router.post("/finance", financeController.post);
 router.get("/finances", financeController.get);
