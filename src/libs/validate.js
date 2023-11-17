@@ -12,7 +12,7 @@ class Validate {
   }
 
   categoryId(category_id) {
-    if (!category_id || typeof category_id !== "number") {
+    if (!category_id) {
       throw new Error("Category id is invalid");
     }
   }
@@ -30,7 +30,7 @@ class Validate {
   }
 
   financeId(finance_id) {
-    if (!finance_id || typeof finance_id !== "number") {
+    if (!finance_id) {
       throw new Error("Finance id is invalid");
     }
   }
