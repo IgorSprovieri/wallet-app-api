@@ -9,7 +9,7 @@ class CategoryController {
       const categories = await categoryRepository.get(user_id);
 
       return res.status(200).json(categories);
-    } catch (error) {
+    } catch (err) {
       return res.status(500).json({ error: err?.message });
     }
   }
@@ -22,7 +22,7 @@ class CategoryController {
       validate.name(name);
       validate.color(color);
       validate.iconUrl(icon_url);
-    } catch (error) {
+    } catch (err) {
       return res.status(400).json({ error: err?.message });
     }
 
@@ -43,7 +43,7 @@ class CategoryController {
       }
 
       return res.status(201).json(categoryCreated);
-    } catch (error) {
+    } catch (err) {
       return res.status(500).json({ error: err?.message });
     }
   }
@@ -58,7 +58,7 @@ class CategoryController {
       validate.name(newName);
       validate.color(newColor);
       validate.iconUrl(newIcon_url);
-    } catch (error) {
+    } catch (err) {
       return res.status(400).json({ error: err?.message });
     }
 
@@ -85,7 +85,7 @@ class CategoryController {
       }
 
       return res.status(200).json(categoryUpdated);
-    } catch (error) {
+    } catch (err) {
       return res.status(500).json({ error: err?.message });
     }
   }
@@ -96,7 +96,7 @@ class CategoryController {
 
     try {
       validate.categoryId(category_id);
-    } catch (error) {
+    } catch (err) {
       return res.status(400).json({ error: err?.message });
     }
 
@@ -118,7 +118,7 @@ class CategoryController {
       }
 
       return res.status(200).json(categoryDeleted);
-    } catch (error) {
+    } catch (err) {
       return res.status(500).json({ error: err?.message });
     }
   }
