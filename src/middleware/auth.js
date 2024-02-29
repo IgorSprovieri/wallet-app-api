@@ -1,5 +1,5 @@
 const { validate } = require("../libs/validate");
-const { userRepository } = require("../db/repositories/user");
+const { userRepository } = require("../repositories/user");
 
 class AuthMiddleware {
   async validate(req, res, next) {

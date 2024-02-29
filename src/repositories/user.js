@@ -1,7 +1,7 @@
-const db = require("..");
+const db = require("../db");
 
 class UserRepository {
-  async findByEmail(email) {
+  async findByEmail({ email }) {
     const query = "SELECT * FROM users WHERE email=$1";
     const values = [email];
 
@@ -9,7 +9,7 @@ class UserRepository {
     return rows[0];
   }
 
-  async create(name, email) {
+  async create({ name, email }) {
     const query = "INSERT INTO users(name, email) VALUES($1, $2) RETURNING *";
     const values = [name, email];
 
@@ -17,7 +17,7 @@ class UserRepository {
     return rows[0];
   }
 
-  async update(newName, newEmail, user_id) {
+  async update(user_id, { newName, newEmail }) {
     const query =
       "UPDATE users SET name=$1, email=$2 WHERE user_id=$3 RETURNING *";
     const values = [newName, newEmail, user_id];

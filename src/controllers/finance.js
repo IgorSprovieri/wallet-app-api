@@ -1,5 +1,5 @@
 const { validate } = require("../libs/validate");
-const { financeRepository } = require("../db/repositories/finance");
+const { financeService } = require("../services/finance");
 
 class FinanceController {
   async post(req, res) {
@@ -16,25 +16,17 @@ class FinanceController {
     }
 
     try {
-      const category = await db.query(categoriesQueries.findById(category_id));
-      if (!category) {
-        return res.status(404).json({ error: "Category not found" });
-      }
-
-      const financeCreated = await financeRepository.create(
+      const createdFinance = await financeService.create({
         user_id,
         category_id,
         title,
         date,
-        value
-      );
-      if (!financeCreated) {
-        return res.status(400).json({ error: "Finance not created" });
-      }
+        value,
+      });
 
-      return res.status(201).json(financeCreated);
+      return res.status(201).json(createdFinance);
     } catch (err) {
-      return res.status(500).json({ error: err?.message });
+      return res.status(err?.status).json({ error: err?.message });
     }
   }
 
@@ -49,22 +41,11 @@ class FinanceController {
         return res.status(400).json(error);
       }
 
-      const dateObject = new Date(date);
-      const year = dateObject.getFullYear();
-      const month = dateObject.getMonth();
+      const finances = await financeService.find({ user_id, date });
 
-      const initialDate = new Date(year, month, 1).toISOString();
-      const finalDate = new Date(year, month + 1, 0).toISOString();
-
-      const finances = await financeRepository.get(
-        user_id,
-        initialDate,
-        finalDate
-      );
-
-      return res.status(200).json(finances.rows);
+      return res.status(200).json(finances);
     } catch (err) {
-      return res.status(500).json({ error: err?.message });
+      return res.status(err?.status || 500).json({ error: err?.message });
     }
   }
 
@@ -88,39 +69,17 @@ class FinanceController {
     }
 
     try {
-      const finance = await financeRepository.findById(finance_id);
-      if (!finance) {
-        return res.status(404).json({ error: "Finance not found" });
-      }
-
-      if (!finance.user_id !== user_id) {
-        return res
-          .status(401)
-          .json({ error: "Finance does not belong to this user" });
-      }
-
-      const category = await db.query(
-        categoriesQueries.findById(newCategory_id)
-      );
-
-      if (!category) {
-        return res.status(404).json({ error: "Category not found" });
-      }
-
-      const financeUpdated = await financeRepository.update(
-        finance_id,
+      const updatedFinance = await financeService.update(finance_id, {
+        user_id,
         newCategory_id,
         newTitle,
         newDate,
-        newValue
-      );
-      if (!financeUpdated) {
-        return res.status(400).json({ error: "Finance not updated" });
-      }
+        newValue,
+      });
 
-      return res.status(200).json(financeUpdated);
+      return res.status(200).json(updatedFinance);
     } catch (err) {
-      return res.status(500).json({ error: err?.message });
+      return res.status(err?.status || 500).json({ error: err?.message });
     }
   }
 
@@ -135,25 +94,13 @@ class FinanceController {
     }
 
     try {
-      const finance = await financeRepository.findById(finance_id);
-      if (!finance) {
-        return res.status(404).json({ error: "Finance not found" });
-      }
+      const deletedFinance = await financeService.delete(finance_id, {
+        user_id,
+      });
 
-      if (!finance.user_id !== user_id) {
-        return res
-          .status(401)
-          .json({ error: "Finance does not belong to this user" });
-      }
-
-      const financeDeleted = await financeRepository.delete(finance_id);
-      if (!financeDeleted) {
-        return res.status(400).json({ error: "Finance not deleted" });
-      }
-
-      return res.status(200).json(financeDeleted);
+      return res.status(200).json(deletedFinance);
     } catch (err) {
-      return res.status(500).json({ error: err?.message });
+      return res.status(err?.status || 500).json({ error: err?.message });
     }
   }
 }

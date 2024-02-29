@@ -1,5 +1,5 @@
-const { userRepository } = require("../db/repositories/user");
 const { validate } = require("../libs/validate");
+const { userService } = require("../services/user");
 
 class UserController {
   async post(req, res) {
@@ -13,19 +13,11 @@ class UserController {
     }
 
     try {
-      const alreadyExists = await userRepository.findByEmail(email);
-      if (alreadyExists) {
-        return res.status(403).json({ error: "User already exists" });
-      }
+      const createdUser = await userService.create({ name, email });
 
-      const userCreated = await userRepository.create(name, email);
-      if (!userCreated) {
-        return res.status(400).json({ error: "User not created" });
-      }
-
-      return res.status(201).json(userCreated);
+      return res.status(201).json(createdUser);
     } catch (err) {
-      return res.status(500).json({ error: err?.message });
+      return res.status(err?.status || 500).json({ error: err?.message });
     }
   }
 
@@ -39,14 +31,11 @@ class UserController {
     }
 
     try {
-      const user = await userRepository.findByEmail(email);
-      if (!user) {
-        return res.status(404).json({ error: "User not found" });
-      }
+      const userFound = await userService.findByEmail({ email });
 
-      return res.status(201).json(user);
+      return res.status(200).json(userFound);
     } catch (err) {
-      return res.status(500).json({ error: err?.message });
+      return res.status(err?.status || 500).json({ error: err?.message });
     }
   }
 
@@ -62,25 +51,15 @@ class UserController {
     }
 
     try {
-      if (newEmail !== currentEmail) {
-        const alreadyExists = await userRepository.findByEmail(newEmail);
-        if (!alreadyExists) {
-          return res.status(404).json({ error: "New email already in use" });
-        }
-      }
-
-      const userUpdated = await userRepository.update(
+      const userUpdated = await userService.update(user_id, {
         newName,
         newEmail,
-        user_id
-      );
-      if (!userUpdated) {
-        return res.status(400).json({ error: "User not updated" });
-      }
+        currentEmail,
+      });
 
       return res.status(200).json(userUpdated);
     } catch (err) {
-      return res.status(500).json({ error: err?.message });
+      return res.status(err?.status || 500).json({ error: err?.message });
     }
   }
 
@@ -88,14 +67,11 @@ class UserController {
     const { user_id } = req;
 
     try {
-      const userDeleted = await userRepository.delete(user_id);
-      if (!userDeleted) {
-        return res.status(400).json({ error: "User not deleted" });
-      }
+      const userDeleted = await userService.delete(user_id);
 
       return res.status(200).json(userDeleted);
     } catch (err) {
-      return res.status(500).json({ error: err?.message });
+      return res.status(err?.status || 500).json({ error: err?.message });
     }
   }
 }
