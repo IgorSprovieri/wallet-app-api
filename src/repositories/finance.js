@@ -1,7 +1,7 @@
-const db = require("..");
+const db = require("../db");
 
 class FinanceRepository {
-  async create(user_id, category_id, title, date, value) {
+  async create({ user_id, category_id, title, date, value }) {
     const query =
       "INSERT INTO finances(user_id, category_id, date, title, value) VALUES($1, $2, $3, $4, $5 ) RETURNING *";
     const values = [user_id, category_id, title, date, value];
@@ -10,7 +10,7 @@ class FinanceRepository {
     return rows[0];
   }
 
-  async get(user_id, initialtDate, finalDate) {
+  async get({ user_id, initialtDate, finalDate }) {
     const query =
       "SELECT fin.title, fin.date, fin.user_id, fin.category_id, cat.name FROM finances as fin JOIN categories as cat ON fin.category_id = cat.category_id WHERE fin.user_id=$1 AND fin.date BETWEEN $2 AND $3 ORDER BY fin.date ASC";
     const values = [user_id, initialtDate, finalDate];
@@ -27,7 +27,7 @@ class FinanceRepository {
     return rows[0];
   }
 
-  async update(finance_id, category_id, title, date, value) {
+  async update(finance_id, { category_id, title, date, value }) {
     const query =
       "UPDATE finances SET category_id=$1 date=$2 title=$3 value=$4 WHERE finance_id=$5 RETURNING *";
     const values = [category_id, title, date, value, finance_id];

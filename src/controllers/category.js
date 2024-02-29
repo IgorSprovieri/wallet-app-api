@@ -1,19 +1,7 @@
 const { validate } = require("../libs/validate");
-const { categoryRepository } = require("../db/repositories/category");
+const { categoryService } = require("../services/category");
 
 class CategoryController {
-  async get(req, res) {
-    const { user_id } = req;
-
-    try {
-      const categories = await categoryRepository.get(user_id);
-
-      return res.status(200).json(categories);
-    } catch (err) {
-      return res.status(500).json({ error: err?.message });
-    }
-  }
-
   async post(req, res) {
     const { user_id } = req;
     const { name, color, icon_url } = req.body;
@@ -27,24 +15,28 @@ class CategoryController {
     }
 
     try {
-      const alreadyExists = await categoryRepository.findByName(name);
-      if (alreadyExists) {
-        return res.status(400).json({ error: "Category already exists" });
-      }
-
-      const categoryCreated = await categoryRepository.create(
+      const createdCategory = await categoryService.create({
         user_id,
         name,
         color,
-        icon_url
-      );
-      if (!categoryCreated) {
-        return res.status(400).json({ error: "Category not created" });
-      }
+        icon_url,
+      });
 
-      return res.status(201).json(categoryCreated);
+      return res.status(201).json(createdCategory);
     } catch (err) {
-      return res.status(500).json({ error: err?.message });
+      return res.status(err?.status || 500).json({ error: err?.message });
+    }
+  }
+
+  async get(req, res) {
+    const { user_id } = req;
+
+    try {
+      const categories = await categoryService.findAll({ user_id });
+
+      return res.status(200).json(categories);
+    } catch (err) {
+      return res.status(err?.status || 500).json({ error: err?.message });
     }
   }
 
@@ -63,30 +55,16 @@ class CategoryController {
     }
 
     try {
-      const category = await categoryRepository.findById(category_id);
-      if (!category) {
-        return res.status(404).json({ error: "Category not found" });
-      }
-
-      if (category.user_id !== user_id) {
-        return res
-          .status(401)
-          .json({ error: "Category does not belong to this user" });
-      }
-
-      const categoryUpdated = await categoryRepository.update(
+      const updatedCategory = await categoryService.update(category_id, {
+        user_id,
         newName,
         newColor,
         newIcon_url,
-        category_id
-      );
-      if (!categoryUpdated) {
-        return res.status(400).json({ error: "Category not updated" });
-      }
+      });
 
-      return res.status(200).json(categoryUpdated);
+      return res.status(200).json(updatedCategory);
     } catch (err) {
-      return res.status(500).json({ error: err?.message });
+      return res.status(err?.status || 500).json({ error: err?.message });
     }
   }
 
@@ -101,25 +79,13 @@ class CategoryController {
     }
 
     try {
-      const category = await categoryRepository.findById(category_id);
-      if (!category) {
-        return res.status(404).json({ error: "Category not found" });
-      }
+      const deletedCategory = await categoryService.delete(category_id, {
+        user_id,
+      });
 
-      if (!category.user_id !== user_id) {
-        return res
-          .status(401)
-          .json({ error: "Category does not belong to this user" });
-      }
-
-      const categoryDeleted = await categoryRepository.delete(category_id);
-      if (!categoryDeleted) {
-        return res.status(400).json({ error: "Category not deleted" });
-      }
-
-      return res.status(200).json(categoryDeleted);
+      return res.status(200).json(deletedCategory);
     } catch (err) {
-      return res.status(500).json({ error: err?.message });
+      return res.status(err?.status || 500).json({ error: err?.message });
     }
   }
 }
