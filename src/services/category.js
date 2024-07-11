@@ -1,4 +1,4 @@
-import { categoryRepository } from "../repositories/category";
+const { categoryRepository } = require("../repositories/category");
 
 class CategoryService {
   async create({ user_id, name, color, icon_url }) {
