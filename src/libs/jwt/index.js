@@ -7,8 +7,8 @@ class JwtToken {
     return jwt.sign({ ...user }, this.#secret, { expiresIn: "1h" });
   }
 
-  decode(token) {
-    return jwt.decode(token, this.#secret);
+  async decode(token) {
+    await jwt.verify(token, process.env.JWT_HASH);
   }
 }
 

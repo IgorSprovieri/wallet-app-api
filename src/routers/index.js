@@ -1,15 +1,20 @@
-const express = require("express");
-const { userController } = require("../controllers/user");
-const { categoryController } = require("../controllers/category");
-const { financeController } = require("../controllers/finance");
-const { authMiddleware } = require("../middleware/auth");
+const { Router } = require("express");
+const { userController } = require("../modules/user/user.controller");
+const { financeController } = require("../modules/finances/finance.controller");
+const { authMiddleware } = require("../modules/auth/auth.middleware");
+const { authController } = require("../modules/auth/auth.controller");
 
-const router = express.Router();
+const {
+  categoryController,
+} = require("../modules/category/category.controller");
+
+const router = Router();
 
 router.get("/", (req, res) => {
   res.send("It is a wallet app API");
 });
 
+router.post("/login", authController.login);
 router.post("/user", userController.post);
 router.get("/user", userController.get);
 

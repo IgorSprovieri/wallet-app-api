@@ -1,9 +1,9 @@
-const { validate } = require("../libs/validate");
-const { categoryService } = require("../services/category");
+const { validate } = require("../../libs");
+const { categoryService } = require("./category.services");
 
 class CategoryController {
   async post(req, res) {
-    const { user_id } = req;
+    const { user_id } = req.user;
     const { name, color, icon_url } = req.body;
 
     try {
@@ -24,24 +24,27 @@ class CategoryController {
 
       return res.status(201).json(createdCategory);
     } catch (err) {
-      return res.status(err?.status || 500).json({ error: err?.message });
+      return res
+        .status(err?.status || 500)
+        .json({ error: err?.message || "Unexpected error" });
     }
   }
 
   async get(req, res) {
-    const { user_id } = req;
+    const { user_id } = req.user;
 
     try {
       const categories = await categoryService.findAll({ user_id });
 
       return res.status(200).json(categories);
     } catch (err) {
-      return res.status(err?.status || 500).json({ error: err?.message });
+      return res
+        .status(err?.status || 500)
+        .json({ error: err?.message || "Unexpected error" });
     }
   }
 
   async put(req, res) {
-    const { user_id } = req;
     const { id: category_id } = req.params;
     const { name: newName, color: newColor, icon_url: newIcon_url } = req.body;
 
@@ -56,7 +59,6 @@ class CategoryController {
 
     try {
       const updatedCategory = await categoryService.update(category_id, {
-        user_id,
         newName,
         newColor,
         newIcon_url,
@@ -64,12 +66,13 @@ class CategoryController {
 
       return res.status(200).json(updatedCategory);
     } catch (err) {
-      return res.status(err?.status || 500).json({ error: err?.message });
+      return res
+        .status(err?.status || 500)
+        .json({ error: err?.message || "Unexpected error" });
     }
   }
 
   async delete(req, res) {
-    const { user_id } = req;
     const { id: category_id } = req.params;
 
     try {
@@ -79,13 +82,13 @@ class CategoryController {
     }
 
     try {
-      const deletedCategory = await categoryService.delete(category_id, {
-        user_id,
-      });
+      const deletedCategory = await categoryService.delete(category_id);
 
       return res.status(200).json(deletedCategory);
     } catch (err) {
-      return res.status(err?.status || 500).json({ error: err?.message });
+      return res
+        .status(err?.status || 500)
+        .json({ error: err?.message || "Unexpected error" });
     }
   }
 }

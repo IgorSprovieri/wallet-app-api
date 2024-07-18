@@ -1,7 +1,6 @@
 const bcrypt = require("bcrypt");
-const { userRepository } = require("../db/repositories/user");
-const { validate } = require("../libs/validate");
-const { jwtToken } = require("../libs/jwtToken");
+const { userRepository } = require("../user/user.repository");
+const { validate, jwtToken } = require("../../libs");
 
 class AuthController {
   async login(req, res) {
@@ -15,12 +14,12 @@ class AuthController {
     }
 
     try {
-      const userFound = await userRepository.findByEmail(email);
-      if (!userFound) {
+      const foundUser = await userRepository.findByEmail(email);
+      if (!foundUser) {
         return res.status(401).json({ error: "User or password is invalid" });
       }
 
-      const { passwordHash, ...user } = userFound;
+      const { passwordHash, ...user } = foundUser;
 
       const isPasswordValid = await bcrypt.compare(password, passwordHash);
       if (!isPasswordValid) {

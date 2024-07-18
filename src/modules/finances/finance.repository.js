@@ -1,4 +1,4 @@
-const db = require("../db");
+const db = require("../../db");
 
 class FinanceRepository {
   async create({ user_id, category_id, title, date, value }) {

@@ -1,9 +1,9 @@
-const { validate } = require("../libs/validate");
-const { financeService } = require("../services/finance");
+const { validate } = require("../../libs/validate");
+const { financeService } = require("./finance.services");
 
 class FinanceController {
   async post(req, res) {
-    const { user_id } = req;
+    const { user_id } = req.user;
     const { category_id, title, date, value } = req.body;
 
     try {
@@ -32,7 +32,7 @@ class FinanceController {
 
   async get(req, res) {
     try {
-      const { user_id } = req;
+      const { user_id } = req.user;
       const { date } = req.query;
 
       try {
@@ -41,16 +41,17 @@ class FinanceController {
         return res.status(400).json(error);
       }
 
-      const finances = await financeService.find({ user_id, date });
+      const finances = await financeService.find(user_id, date);
 
       return res.status(200).json(finances);
     } catch (err) {
-      return res.status(err?.status || 500).json({ error: err?.message });
+      return res
+        .status(err?.status || 500)
+        .json({ error: err?.message || "Unexpected error" });
     }
   }
 
   async put(req, res) {
-    const { user_id } = req;
     const { id: finance_id } = req.params;
     const {
       category_id: newCategory_id,
@@ -70,7 +71,6 @@ class FinanceController {
 
     try {
       const updatedFinance = await financeService.update(finance_id, {
-        user_id,
         newCategory_id,
         newTitle,
         newDate,
@@ -79,12 +79,13 @@ class FinanceController {
 
       return res.status(200).json(updatedFinance);
     } catch (err) {
-      return res.status(err?.status || 500).json({ error: err?.message });
+      return res
+        .status(err?.status || 500)
+        .json({ error: err?.message || "Unexpected error" });
     }
   }
 
   async delete(req, res) {
-    const { user_id } = req;
     const { id: finance_id } = req.params;
 
     try {
@@ -94,13 +95,13 @@ class FinanceController {
     }
 
     try {
-      const deletedFinance = await financeService.delete(finance_id, {
-        user_id,
-      });
+      const deletedFinance = await financeService.delete(finance_id);
 
       return res.status(200).json(deletedFinance);
     } catch (err) {
-      return res.status(err?.status || 500).json({ error: err?.message });
+      return res
+        .status(err?.status || 500)
+        .json({ error: err?.message || "Unexpected error" });
     }
   }
 }

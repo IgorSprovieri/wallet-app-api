@@ -1,4 +1,4 @@
-const { categoryRepository } = require("../repositories/category");
+const { categoryRepository } = require("./category.repository");
 
 class CategoryService {
   async create({ user_id, name, color, icon_url }) {
@@ -20,8 +20,8 @@ class CategoryService {
     return createdCategory;
   }
 
-  async findAll({ user_id }) {
-    const categories = await categoryRepository.findAll({ user_id });
+  async findAll(user_id) {
+    const categories = await categoryRepository.findAll(user_id);
     if (!categories) {
       throw { status: 500, message: "Failed to find categories" };
     }
@@ -29,14 +29,10 @@ class CategoryService {
     return categories;
   }
 
-  async update(category_id, { user_id, newName, newColor, newIcon_url }) {
+  async update(category_id, { newName, newColor, newIcon_url }) {
     const category = await categoryRepository.findById(category_id);
     if (!category) {
       throw { status: 404, message: "Category not found" };
-    }
-
-    if (category.user_id !== user_id) {
-      throw { status: 401, message: "Category does not belong to this user" };
     }
 
     const updatedCategory = await categoryRepository.update(category_id, {
@@ -51,14 +47,10 @@ class CategoryService {
     return updatedCategory;
   }
 
-  async delete(category_id, { user_id }) {
-    const category = await categoryRepository.findById(category_id);
-    if (!category) {
+  async delete(category_id) {
+    const foundCategory = await categoryRepository.findById(category_id);
+    if (!foundCategory) {
       throw { status: 404, message: "Category not found" };
-    }
-
-    if (!category.user_id !== user_id) {
-      throw { status: 401, message: "Category does not belong to this user" };
     }
 
     const deletedCategory = await categoryRepository.delete(category_id);

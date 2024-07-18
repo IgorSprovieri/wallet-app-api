@@ -1,13 +1,20 @@
-const { userRepository } = require("../repositories/user");
+const bcrypt = require("bcrypt");
+const { userRepository } = require("./user.repository");
 
 class UserService {
-  async create({ name, email }) {
+  async create({ name, email, password }) {
     const alreadyExists = await userRepository.findByEmail({ email });
     if (alreadyExists) {
       throw { status: 409, message: "User already exists" };
     }
 
-    const createdUser = await userRepository.create({ name, email });
+    const passwordHash = await bcrypt.hash(password, 8);
+
+    const createdUser = await userRepository.create({
+      name,
+      email,
+      passwordHash,
+    });
     if (!createdUser) {
       throw { status: 500, message: "Failed to create user" };
     }
@@ -15,23 +22,10 @@ class UserService {
     return createdUser;
   }
 
-  async findByEmail({ email }) {
-    const userFound = await userRepository.findByEmail({ email });
-    if (!userFound) {
-      throw { status: 404, message: "User not found" };
-    }
-
-    return userFound;
-  }
-
-  async update(user_id, { newName, newEmail, currentEmail }) {
-    if (newEmail !== currentEmail) {
-      const alreadyExists = await userRepository.findByEmail({
-        email: newEmail,
-      });
-      if (!alreadyExists) {
-        throw { status: 409, message: "New email already exists" };
-      }
+  async update(user_id, { newName, newEmail }) {
+    const alreadyExists = await userRepository.findByEmail(newEmail);
+    if (!alreadyExists) {
+      throw { status: 409, message: "New email already in use" };
     }
 
     const updatedUser = await userRepository.update(user_id, {

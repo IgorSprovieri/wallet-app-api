@@ -1,4 +1,4 @@
-const db = require("../db");
+const db = require("../../db");
 
 class CategoryRepository {
   async findAll(user_id) {
@@ -9,7 +9,7 @@ class CategoryRepository {
     return rows;
   }
 
-  async findByName({ name }) {
+  async findByName(name) {
     const query = "SELECT * FROM categories WHERE name=$1 ";
     const values = [name];
 
