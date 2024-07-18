@@ -2,7 +2,7 @@ const createTablesQueries = {
   createUsers: () => {
     return {
       name: "create-users",
-      text: "CREATE TABLE users(user_id SERIAL PRIMARY KEY NOT NULL,name TEXT NOT NULL,email TEXT UNIQUE NOT NULL)",
+      text: "CREATE TABLE users(user_id SERIAL PRIMARY KEY NOT NULL, name TEXT NOT NULL, email TEXT UNIQUE NOT NULL, passwordHash TEXT NOT NULL)",
     };
   },
   createCategories: () => {

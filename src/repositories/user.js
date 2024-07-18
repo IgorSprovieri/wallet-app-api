@@ -9,18 +9,19 @@ class UserRepository {
     return rows[0];
   }
 
-  async create({ name, email }) {
-    const query = "INSERT INTO users(name, email) VALUES($1, $2) RETURNING *";
-    const values = [name, email];
+  async create(name, email, passwordHash) {
+    const query =
+      "INSERT INTO users(name, email, passwordHash) VALUES($1, $2, $3) RETURNING *";
+    const values = [name, email, passwordHash];
 
     const { rows } = await db.query(query, values);
     return rows[0];
   }
 
-  async update(user_id, { newName, newEmail }) {
+  async update(newName, newEmail, newPasswordHash, user_id) {
     const query =
-      "UPDATE users SET name=$1, email=$2 WHERE user_id=$3 RETURNING *";
-    const values = [newName, newEmail, user_id];
+      "UPDATE users SET name=$1, email=$2, passwordHash=$3 WHERE user_id=$4 RETURNING *";
+    const values = [newName, newEmail, newPasswordHash, user_id];
 
     const { rows } = await db.query(query, values);
     return rows[0];

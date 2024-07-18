@@ -1,21 +1,37 @@
+<<<<<<< HEAD
+=======
+const bcrypt = require("bcrypt");
+const { userRepository } = require("../db/repositories/user");
+>>>>>>> 8ee67a1 (feat: create user passwordHash)
 const { validate } = require("../libs/validate");
 const { userService } = require("../services/user");
 
 class UserController {
   async post(req, res) {
-    const { name, email } = req.body;
+    const { name, email, password } = req.body;
 
     try {
       validate.name(name);
       validate.email(email);
+      validate.password(password);
     } catch (err) {
       return res.status(400).json({ error: err?.message });
     }
 
     try {
-      const createdUser = await userService.create({ name, email });
 
-      return res.status(201).json(createdUser);
+      const passwordHash = await bcrypt.hash(password, 8);
+
+      const userCreated = await userRepository.create(
+        name,
+        email,
+        passwordHash
+      );
+      if (!userCreated) {
+        return res.status(400).json({ error: "User not created" });
+      }
+
+      return res.status(201).json(userCreated);
     } catch (err) {
       return res.status(err?.status || 500).json({ error: err?.message });
     }

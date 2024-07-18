@@ -1,13 +1,23 @@
 class Validate {
+  #isNumeric(str) {
+    return /^[0-9]+$/.test(str);
+  }
+
   name(name) {
-    if (!name || name.length < 3) {
+    if (!name || name?.length < 3) {
       throw new Error("Name should have more than 3 characters");
     }
   }
 
   email(email) {
-    if (!email || !email.includes("@") || !email.includes(".")) {
+    if (!email || !email?.includes("@") || !email?.includes(".")) {
       throw new Error("E-mail is invalid");
+    }
+  }
+
+  password(password) {
+    if (!password || !password?.length !== 6 || !this.#isNumeric(password)) {
+      throw new Error("Password is invalid");
     }
   }
 
@@ -18,7 +28,7 @@ class Validate {
   }
 
   color(color) {
-    if (!color || color.length !== 7 || !color.includes("#")) {
+    if (!color || color?.length !== 7 || !color?.includes("#")) {
       throw new Error("Color is invalid");
     }
   }
@@ -36,13 +46,13 @@ class Validate {
   }
 
   title(title) {
-    if (!title || title.length < 3) {
+    if (!title || title?.length < 3) {
       throw new Error("Title should have more than 3 characters");
     }
   }
 
   date(date) {
-    if (!date || date.length !== 10) {
+    if (!date || date?.length !== 10) {
       throw new Error("Date should be DD-MM-YYYY format");
     }
   }
